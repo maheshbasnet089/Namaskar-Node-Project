@@ -3,13 +3,16 @@ const app = express()
 
 // const app = require("express")()
 
+app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
-    res.send("<h1>This is home page</h1>")
+    const name = "Manish Basnet"
+    const address = "Itahari"
+    res.render('home.ejs',{data:name,address })
 })
 
 app.get("/about",(req,res)=>{
-    res.send("This is about page")
+    res.render('about')
 })
 
 

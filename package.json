@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "\\"
+    "start": "nodemon app.js"
   },
   "author": "Manish Basnet",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.0"
   }
 }
