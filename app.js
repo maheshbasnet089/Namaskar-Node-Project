@@ -6,17 +6,22 @@ const app = express()
 app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
-    const name = "Manish Basnet"
-    const address = "Itahari"
-    res.render('home.ejs',{data:name,address })
-})
-
-app.get("/about",(req,res)=>{
-    res.render('about')
+    res.render('home.ejs')
 })
 
 
+app.get("/register",(req,res)=>{
+    res.render("auth/register")
+})
 
-app.listen(3000,()=>{
-    console.log("Project has started at port 3000")
+app.get("/login",(req,res)=>{
+    res.render('auth/login')
+})
+
+
+app.use(express.static('public/css/'))
+
+const PORT = 3000
+app.listen(PORT,()=>{
+    console.log(`Project has started at port ${PORT}`)
 })
