@@ -1,6 +1,7 @@
 const express = require('express')
 const { users } = require('./model/index')
 const app = express()
+const bcrypt = require('bcrypt')
 
 require("./model/index")
 // const app = require("express")()
@@ -31,9 +32,9 @@ app.post("/register",async (req,res)=>{
     // const email = req.body.email 
     const {username,password,email} = req.body
 
-    await users.create({
+     await users.create({
         email, 
-        password, 
+        password : bcrypt.hashSync(password,10), 
         username
     })
 
@@ -48,7 +49,7 @@ app.get("/login",(req,res)=>{
 })
 app.use(express.static('public/css/'))
 
-const PORT = 3000
+const PORT = 4000
 app.listen(PORT,()=>{
     console.log(`Project has started at port ${PORT}`)
 })

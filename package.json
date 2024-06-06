@@ -9,6 +9,7 @@
   "author": "Manish Basnet",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mysql2": "^3.9.7",
