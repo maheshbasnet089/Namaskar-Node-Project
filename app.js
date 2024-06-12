@@ -31,7 +31,18 @@ app.post("/register",async (req,res)=>{
     // const password = req.body.password 
     // const email = req.body.email 
     const {username,password,email} = req.body
-
+    if(!username || !password || !email){
+        return res.send("Please provide username,email,password")
+    }
+    // const data = await users.findAll({
+    //     where : {
+    //         email : email
+    //     }
+    // })
+  
+    // if(data.length > 0){
+    //     return res.send("Already registered email")
+    // }
      await users.create({
         email, 
         password : bcrypt.hashSync(password,10), 
@@ -39,14 +50,39 @@ app.post("/register",async (req,res)=>{
     })
 
     res.send("Registered successfully")
-
-
 })
 
 
 app.get("/login",(req,res)=>{
     res.render('auth/login')
 })
+
+app.post("/login",async (req,res)=>{
+   const {email,password} = req.body 
+   if(!email || !password){
+    return res.send("Please provide email,password")
+   }
+   //email check 
+   const [data] = await users.findAll({
+    where : {
+        email : email 
+    }
+   })
+   if(data){
+    // next password check garney
+   const isMatched =  bcrypt.compareSync(password,data.password)
+   if(isMatched){
+    
+    res.send("Logged in success")
+   }else{
+    res.send("Invalid Password")
+   }
+
+   }else{
+    res.send("No user with that email")
+   }
+})
+
 app.use(express.static('public/css/'))
 
 const PORT = 4000
@@ -75,3 +111,4 @@ app.listen(PORT,()=>{
 
 */
 
+// sudo /Applications/XAMPP/xamppfiles/xampp start
