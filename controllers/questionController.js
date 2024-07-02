@@ -5,6 +5,7 @@ exports.renderAskQuestionPage = (req,res)=>{
 }
 
 exports.askQuestion = async (req,res)=>{
+
     const {title,description}  = req.body 
     console.log(req.body)
     console.log(req.file)
