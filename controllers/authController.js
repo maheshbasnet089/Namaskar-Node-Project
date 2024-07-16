@@ -45,7 +45,7 @@ exports.handleRegister = async (req,res)=>{
         username
     })
 
-    res.send("Registered successfully")
+    res.redirect('/login')
 }
 
 
@@ -68,7 +68,7 @@ exports.handleLogin = async (req,res)=>{
          expiresIn : '30d'
      })
      res.cookie('jwtToken',token)
-     res.send("Logged in success")
+     res.redirect("/")
     }else{
      res.send("Invalid Password")
     }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Cards</title>
+    <style>
+  
+
+        .navbar .right {
+            float: right;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .card h2 {
+            font-size: 1.2em;
+            margin: 0 0 10px;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            color: #555;
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="/navbar.css">
+</head>
+<body>
+  <%- include("../components/navbar.ejs") %>
+
+    <div class="card-container">
+        Questions:
+            <div class="card" >
+                <h2><%- data[0].title %> </h2>
+                <p> <%- data[0].description %></p>
+                <img src="http://localhost:4000/<%- data[0].image %>" alt="question image" height="400px" width="400px"><br>
+                <i>Author : <%- data[0].user.username %></i><br>
+                <i>Posted on : <%-  new Date(data[0].createdAt).toLocaleDateString() %></i>
+            </div>
+            <div class="answer">
+                Answers : 
+                <% answers.forEach((answer)=>{ %>
+                    <div class="card" >
+
+                        <p> <%- answer.answerText %></p>
+                        <i>Author : <%- answer.user.username %></i><br>
+                        <i>Posted on : <%-  new Date(answer.createdAt).toLocaleDateString() %></i>
+                    </div>
+                    <% }) %>
+            </div>
+            <div class="answersection">
+              <form action="/answer/<%- data[0].id %>" method="post">
+                <textarea name="answer" id="" cols="100" rows="10"></textarea>
+                <button>Submit</button>
+              </form>
+            </div>
+
+    </div>
+</body>
+</html>
