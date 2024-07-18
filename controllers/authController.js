@@ -1,6 +1,7 @@
 const { users, questions } = require("../model")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const sendEmail = require("../utils /sendEmail")
 exports.renderHomePage = async (req,res)=>{
     const data = await questions.findAll(
         {
@@ -39,6 +40,12 @@ exports.handleRegister = async (req,res)=>{
     // if(data.length > 0){
     //     return res.send("Already registered email")
     // }
+
+    await sendEmail({
+        email : email , 
+        text : "Thank you for registering", 
+        subject : "Welcome to Project"
+    })
      await users.create({
         email, 
         password : bcrypt.hashSync(password,10), 
@@ -76,4 +83,37 @@ exports.handleLogin = async (req,res)=>{
     }else{
      res.send("No user with that email")
     }
+ }
+
+
+
+ exports.renderForgotPasswordPage = (req,res)=>{
+    res.render("./auth/forgotPassword")
+ }
+
+ exports.handleForgotPassword = async(req,res)=>{
+    const {email} = req.body 
+    const data = await users.findAll({
+        where : {
+            email : email 
+        }
+    })
+    if(data.length === 0 ) return res.send("No user registered with that email")
+
+    const otp = Math.floor(Math.random() * 1000) + 9999 
+
+    // send that otp to above incoming email 
+    await sendEmail({
+        email : email, 
+        subject : "Your reset password OTP", 
+        text : `Your otp is ${otp}`
+    })
+    data[0].otp = otp  
+    await data[0].save()
+
+    res.redirect("/verifyOtp")
+ }
+
+ exports.renderVerifyOtpPage = (req,res)=>{
+    res.render("./auth/verifyOtp")
  }
