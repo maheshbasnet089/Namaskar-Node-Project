@@ -1,10 +1,12 @@
-const { handleRegister, renderRegisterPage, renderLoginPage, handleLogin, renderForgotPasswordPage, handleForgotPassword, renderVerifyOtpPage, verifyOtp, renderResetPassword, handeResetPassword } = require("../controllers/authController")
+const { handleRegister, renderRegisterPage, renderLoginPage, handleLogin, renderForgotPasswordPage, handleForgotPassword, renderVerifyOtpPage, verifyOtp, renderResetPassword, handeResetPassword, logout } = require("../controllers/authController")
+const catchError = require("../utils /catchError")
 
 const router = require("express").Router()
 
 
-router.route('/register').post(handleRegister).get(renderRegisterPage)
-router.route("/login").get(renderLoginPage).post(handleLogin)
+router.route('/register').post(catchError(handleRegister)).get(renderRegisterPage)
+router.route("/login").get(catchError(renderLoginPage)).post(catchError(handleLogin))
+router.route("/logout").get(logout)
 
 router.route("/forgotPassword").get(renderForgotPasswordPage).post(handleForgotPassword)
 router.route("/verifyOtp").get(renderVerifyOtpPage)

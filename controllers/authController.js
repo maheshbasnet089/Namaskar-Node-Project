@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const sendEmail = require("../utils /sendEmail")
 exports.renderHomePage = async (req,res)=>{
+    const [success] = req.flash('success')
     const data = await questions.findAll(
         {
             include : [{
@@ -12,7 +13,7 @@ exports.renderHomePage = async (req,res)=>{
         }
     ) // return array 
     console.log(data)
-    res.render('home.ejs',{data})
+    res.render('home.ejs',{data,success})
 }
 
 exports.renderRegisterPage = (req,res)=>{
@@ -20,7 +21,9 @@ exports.renderRegisterPage = (req,res)=>{
 }
 
 exports.renderLoginPage = (req,res)=>{
-    res.render('auth/login')
+    const [error] = req.flash('error')
+    const [success] = req.flash('success')
+    res.render('auth/login',{error,success})
 }
 
 exports.handleRegister = async (req,res)=>{
@@ -75,13 +78,16 @@ exports.handleLogin = async (req,res)=>{
          expiresIn : '30d'
      })
      res.cookie('jwtToken',token)
+     req.flash('success','Logged in successfully')
      res.redirect("/")
     }else{
-     res.send("Invalid Password")
+     req.flash('error','Invalid Password')
+     res.redirect("/login")
     }
  
     }else{
-     res.send("No user with that email")
+    req.flash('error','No user with that email')
+    res.redirect('/login')
     }
  }
 
@@ -182,4 +188,11 @@ exports.handleLogin = async (req,res)=>{
     }
 
 
+ }
+
+
+ exports.logout = (req,res)=>{
+    res.clearCookie('jwtToken')
+    req.flash('success','Logged out successfully')
+    res.redirect('/login')
  }

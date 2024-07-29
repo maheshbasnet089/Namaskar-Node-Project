@@ -10,9 +10,10 @@
 <body>
 
 <%- include("../components/navbar") %>
+<p style="color:green"><%- success %></p>
 
 <form action="/login" method="post">
-
+    <p style="color:red"><%- error %></p>
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="password" placeholder="Password" required>
     <input type="submit" value="Login">
