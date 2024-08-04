@@ -1,6 +1,7 @@
 const { handleRegister, renderRegisterPage, renderLoginPage, handleLogin, renderForgotPasswordPage, handleForgotPassword, renderVerifyOtpPage, verifyOtp, renderResetPassword, handeResetPassword, logout } = require("../controllers/authController")
 const catchError = require("../utils /catchError")
 
+
 const router = require("express").Router()
 
 

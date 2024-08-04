@@ -1,5 +1,5 @@
 const express = require('express')
-const { users } = require('./model/index')
+const { users, answers } = require('./model/index')
 const app = express()
 
 const { renderHomePage, renderRegisterPage, handleRegister, renderLoginPage } = require('./controllers/authController')
@@ -14,6 +14,7 @@ const {promisify} = require('util')
 const session = require('express-session')
 const flash = require("connect-flash")
 const catchError = require('./utils /catchError')
+const socketio = require("socket.io")
 
 app.set('view engine','ejs')
 app.use(express.urlencoded({extended : true})) // ssr 
@@ -52,8 +53,26 @@ app.use(express.static("./storage/"))
 app.use(express.static('public/css/'))
 
 const PORT = 4000
-app.listen(PORT,()=>{
+const server = app.listen(PORT,()=>{
     console.log(`Project has started at port ${PORT}`)
 })
 
 // sudo /Applications/XAMPP/xamppfiles/xampp start
+
+const io = socketio(server,{
+  cors : {
+    origin : "*"
+  }
+})
+
+io.on('connection',(socket)=>{
+  socket.on('like',async (id)=>{
+   const answer = await answers.findByPk(id)
+   if(answer){
+    answer.likes += 1 ; 
+   await answer.save();
+   
+   socket.emit('likeUpdate',answer.likes) 
+   }
+  })
+})

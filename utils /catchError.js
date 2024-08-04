@@ -6,4 +6,4 @@ const catchError = (fn)=>{
     }
 }
 
-module.exports = catchError 
+module.exports = catchError
