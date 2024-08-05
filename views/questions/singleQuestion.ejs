@@ -62,7 +62,8 @@
                         <p> <%- answer.answerText %></p>
                         <i>Author : <%- answer.user.username %></i><br>
                         <i>Posted on : <%-  new Date(answer.createdAt).toLocaleDateString() %></i>
-                        <span id="likes"></span><button onclick="likePost(<%= answer.id %> )">Like</button>
+                        <button onclick="likePost(<%= answer.id %> )">Like</button>
+                        <span id="likes_<%- answer.id%>"><%- likes %></span>
                     </div>
                     <% }) %>
             </div>
@@ -78,11 +79,15 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
        const socket =  io() 
+       const cookie = document.cookie.split('=')
        function likePost(answerId){
-        socket.emit('like',answerId)
+        socket.emit('like',{
+            answerId, 
+            cookie : cookie[1]
+        })
        }
-       socket.on('likeUpdate',(likesCount)=>{
-        const likes = document.getElementById("likes")
+       socket.on('likeUpdate',({likesCount,answerId})=>{
+        const likes = document.getElementById(`likes_${answerId}`)
         likes.textContent = likesCount
        })
     </script>

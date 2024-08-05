@@ -1,5 +1,5 @@
 const express = require('express')
-const { users, answers } = require('./model/index')
+const { users, answers, sequelize } = require('./model/index')
 const app = express()
 
 const { renderHomePage, renderRegisterPage, handleRegister, renderLoginPage } = require('./controllers/authController')
@@ -15,6 +15,8 @@ const session = require('express-session')
 const flash = require("connect-flash")
 const catchError = require('./utils /catchError')
 const socketio = require("socket.io")
+const { QueryTypes } = require('sequelize')
+
 
 app.set('view engine','ejs')
 app.use(express.urlencoded({extended : true})) // ssr 
@@ -66,13 +68,28 @@ const io = socketio(server,{
 })
 
 io.on('connection',(socket)=>{
-  socket.on('like',async (id)=>{
-   const answer = await answers.findByPk(id)
-   if(answer){
-    answer.likes += 1 ; 
-   await answer.save();
-   
-   socket.emit('likeUpdate',answer.likes) 
+  socket.on('like',async ({answerId,cookie})=>{
+   const answer = await answers.findByPk(answerId)
+   if(answer && cookie){
+    const decryptedResult =  await promisify(jwt.verify)(cookie,'hahaha')
+    if(decryptedResult){
+     const user = await sequelize.query(`SELECT * FROM likes_${answerId} WHERE userId=${decryptedResult.id}`,{
+      type : QueryTypes.SELECT
+     })
+     if(user.length === 0){
+       await sequelize.query(`INSERT INTO likes_${answerId} (userId) VALUES(${decryptedResult.id})`,{
+          type : QueryTypes.INSERT
+        }) 
+
+     }
+    }
+  const likes =  await sequelize.query(`SELECT * FROM likes_${answerId}`,{
+    type : QueryTypes.SELECT
+   })
+
+   const likesCount = likes.length
+   console.log(likesCount)
+   socket.emit('likeUpdate',{likesCount,answerId}) 
    }
   })
 })
