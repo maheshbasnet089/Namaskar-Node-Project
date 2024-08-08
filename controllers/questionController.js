@@ -6,10 +6,10 @@ exports.renderAskQuestionPage = (req,res)=>{
 }
 
 exports.askQuestion = async (req,res)=>{
-
+ 
     const {title,description}  = req.body 
     console.log(req.body)
-    console.log(req.file)
+
     const userId = req.userId 
     const fileName = req.file.filename
     if(!title || !description ){
@@ -48,11 +48,20 @@ exports.renderSingleQuestionPage = async (req,res)=>{
             }]
         }
     )
+let likes; 
+let count = 0 ; 
+    try {
+      likes = await sequelize.query(`SELECT * FROM likes_${id}`,{
+            type : QueryTypes.SELECT
+        })
+        if(likes.length){
 
-    const likes = await sequelize.query(`SELECT * FROM likes_${id}`,{
-        type : QueryTypes.SELECT
-    })
-    const count = likes.length
+            count = likes.length
+        }
+        
+    } catch (error) {
+        console.log(error)
+    }
 
     const answersData = await answers.findAll({
         where : {

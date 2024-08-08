@@ -1,6 +1,7 @@
 const express = require('express')
 const { users, answers, sequelize } = require('./model/index')
 const app = express()
+require("dotenv").config()
 
 const { renderHomePage, renderRegisterPage, handleRegister, renderLoginPage } = require('./controllers/authController')
 const cookieParser = require('cookie-parser')
@@ -86,8 +87,15 @@ io.on('connection',(socket)=>{
   const likes =  await sequelize.query(`SELECT * FROM likes_${answerId}`,{
     type : QueryTypes.SELECT
    })
-
+   
    const likesCount = likes.length
+   await answers.update({
+    likes : likesCount
+   },{
+    where : {
+      id : answerId
+    }
+   })
    console.log(likesCount)
    socket.emit('likeUpdate',{likesCount,answerId}) 
    }
