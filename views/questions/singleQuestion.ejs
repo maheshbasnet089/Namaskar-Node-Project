@@ -130,7 +130,7 @@
         <div class="card">
             <h2><%- data[0].title %></h2>
             <p><%- data[0].description %></p>
-            <img src="http://localhost:4000/<%- data[0].image %>" alt="question image">
+            <img src="<%- data[0].image %>" alt="question image">
             <i>Author: <%- data[0].user.username %></i><br>
             <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
         </div>
